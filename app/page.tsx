@@ -1,160 +1,41 @@
-'use client';
+import { auth, signIn } from "@/auth";
+import { redirect } from "next/navigation";
 
-import { useState, useEffect } from 'react';
-import Calendar from '@/components/Calendar';
-import TimeSlots from '@/components/TimeSlots';
-import BookingForm from '@/components/BookingForm';
-import { TimeSlot } from '@/lib/booking';
-import { getAvailableSlots } from './actions';
-import { CheckCircle2, Calendar as CalendarIcon, Clock, User, ArrowLeft, ChevronRight } from 'lucide-react';
-import { format } from 'date-fns';
+export default async function LandingPage() {
+  const session = await auth();
 
-export default function Home() {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [slots, setSlots] = useState<TimeSlot[]>([]);
-  const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
-  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
-  const [isBooked, setIsBooked] = useState(false);
-
-  useEffect(() => {
-    if (selectedDate) {
-      setIsLoadingSlots(true);
-      setSelectedSlot(null);
-      getAvailableSlots(selectedDate)
-        .then(setSlots)
-        .finally(() => setIsLoadingSlots(false));
-    }
-  }, [selectedDate]);
-
-  if (isBooked && selectedSlot) {
-    return (
-      <main className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center p-6">
-        <div className="max-w-md w-full bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl p-10 text-center border border-zinc-200 dark:border-zinc-800 animate-in zoom-in-95 duration-500">
-          <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="w-10 h-10 text-green-600 dark:text-green-400" />
-          </div>
-          <h1 className="text-3xl font-black text-zinc-900 dark:text-zinc-100 italic mb-2 tracking-tight underline cursor-default">You're Booked!</h1>
-          <p className="text-zinc-500 dark:text-zinc-400 mb-8 font-medium">A confirmation email has been sent to you.</p>
-          
-          <div className="space-y-4 text-left bg-zinc-50 dark:bg-zinc-800/50 p-6 rounded-2xl border border-zinc-100 dark:border-zinc-800">
-            <div className="flex items-center space-x-3 text-zinc-700 dark:text-zinc-300">
-              <CalendarIcon className="w-5 h-5 opacity-50" />
-              <span className="font-bold">{format(selectedSlot.startTime, 'EEEE, MMMM do, yyyy')}</span>
-            </div>
-            <div className="flex items-center space-x-3 text-zinc-700 dark:text-zinc-300">
-              <Clock className="w-5 h-5 opacity-50" />
-              <span className="font-bold">{format(selectedSlot.startTime, 'hh:mm aa')} - {format(selectedSlot.endTime, 'hh:mm aa')}</span>
-            </div>
-          </div>
-
-          <button
-            onClick={() => {
-              setIsBooked(false);
-              setSelectedDate(null);
-              setSelectedSlot(null);
-            }}
-            className="mt-10 w-full py-4 bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 text-white font-bold rounded-2xl hover:opacity-90 transition-all uppercase tracking-widest text-sm"
-          >
-            Schedule another meeting
-          </button>
-        </div>
-      </main>
-    );
+  if (session) {
+    redirect("/dashboard");
   }
 
   return (
-    <main className="min-h-screen bg-zinc-50 dark:bg-zinc-950 py-12 px-6">
-      <div className="max-w-6xl mx-auto">
-        <header className="mb-12 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div>
-            <div className="inline-flex items-center space-x-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest mb-4">
-              <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
-              <span>Direct Scheduling</span>
-            </div>
-            <h1 className="text-5xl font-black text-zinc-900 dark:text-zinc-100 italic tracking-tighter cursor-default">Book a <span className="text-blue-600">Meeting</span></h1>
-            <p className="text-zinc-500 dark:text-zinc-400 mt-2 text-lg font-medium">Select a time that works for you. 30 minutes duration.</p>
-          </div>
-          
-          {selectedDate && (
-             <button 
-              onClick={() => {
-                setSelectedDate(null);
-                setSelectedSlot(null);
-              }}
-              className="flex items-center space-x-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 font-bold uppercase tracking-widest text-xs transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Choose different date</span>
-            </button>
-          )}
-        </header>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Progress Indicator (Mobile) */}
-          <div className="lg:hidden flex space-x-4 mb-4">
-            <div className={`h-1 flex-1 rounded-full ${!selectedDate ? 'bg-blue-600' : 'bg-zinc-200'}`} />
-            <div className={`h-1 flex-1 rounded-full ${selectedDate && !selectedSlot ? 'bg-blue-600' : 'bg-zinc-200'}`} />
-            <div className={`h-1 flex-1 rounded-full ${selectedSlot ? 'bg-blue-600' : 'bg-zinc-200'}`} />
-          </div>
-
-          {!selectedSlot ? (
-            <>
-              <div className="lg:col-span-7 xl:col-span-8 animate-in fade-in slide-in-from-left-4 duration-500">
-                <div className="relative group">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
-                  <Calendar 
-                    selectedDate={selectedDate} 
-                    onDateSelect={(date) => setSelectedDate(date)} 
-                  />
-                </div>
-              </div>
-
-              <div className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-12 animate-in fade-in slide-in-from-right-4 duration-500 delay-150">
-                <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
-                  <div className="px-6 py-5 bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-                    <h3 className="font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-widest text-xs">Available Times</h3>
-                    {selectedDate && <span className="text-blue-600 font-bold text-xs">{format(selectedDate, 'MMM d')}</span>}
-                  </div>
-                  {!selectedDate ? (
-                    <div className="p-12 text-center">
-                      <div className="w-16 h-16 bg-zinc-50 dark:bg-zinc-800 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-zinc-100 dark:border-zinc-700">
-                        <CalendarIcon className="w-8 h-8 text-zinc-300" />
-                      </div>
-                      <p className="text-zinc-400 font-medium text-sm">Pick a date to see availability</p>
-                    </div>
-                  ) : (
-                    <TimeSlots 
-                      slots={slots} 
-                      isLoading={isLoadingSlots} 
-                      selectedSlot={selectedSlot}
-                      onSlotSelect={(slot) => setSelectedSlot(slot)}
-                    />
-                  )}
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="lg:col-span-8 lg:col-start-3 max-w-2xl mx-auto w-full">
-              <BookingForm 
-                selectedSlot={selectedSlot}
-                onSuccess={() => setIsBooked(true)}
-                onCancel={() => setSelectedSlot(null)}
-              />
-            </div>
-          )}
-        </div>
-      </div>
-
-      <footer className="mt-20 border-t border-zinc-200 dark:border-zinc-800 pt-10 text-center flex flex-col md:flex-row items-center justify-between gap-4">
-        <p className="text-zinc-400 text-xs font-bold uppercase tracking-[0.2em]">Powered by Next.js 14 & Neon</p>
-        <a 
-          href="/admin" 
-          className="text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 text-xs font-bold uppercase tracking-widest transition-colors flex items-center"
+    <div className="min-h-screen w-full flex items-center justify-center bg-[#F4F4F0] text-black font-sans p-4">
+      <div className="w-full max-w-md bg-white border-[4px] border-black p-8 shadow-[8px_8px_0_0_#000]">
+        <h1 className="text-4xl font-black uppercase mb-6 tracking-tighter text-center">MEETFLOW</h1>
+        <p className="text-xl font-bold mb-8 text-center text-gray-700">Schedule meetings effortlessly.</p>
+        
+        <form
+          action={async () => {
+            "use server";
+            await signIn("google");
+          }}
+          className="flex flex-col gap-6"
         >
-          <span>Admin Dashboard</span>
-          <ChevronRight className="w-3 h-3 ml-1" />
-        </a>
-      </footer>
-    </main>
+          <button 
+            type="submit" 
+            className="w-full bg-white text-[#3c4043] font-medium text-lg py-3 px-4 border border-[#dadce0] rounded hover:bg-gray-50 hover:shadow-sm transition-all flex items-center justify-center gap-3 shadow-sm"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+              <path fill="none" d="M0 0h48v48H0z"/>
+            </svg>
+            Sign in with Google
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }

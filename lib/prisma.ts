@@ -1,21 +1,21 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from "@prisma/client";
+import { PrismaNeonHttp } from "@prisma/adapter-neon";
 
-const prismaClientSingleton = () => {
-  return new PrismaClient({
-    datasources: {
-      db: {
-        url: process.env.DATABASE_URL
-      }
-    }
-  })
+if (typeof window !== "undefined") {
+  throw new Error("❌ PRISMA BROWSER ERROR: Prisma should only be imported on the server side! Check your client components. ❌");
 }
 
-declare global {
-  var prisma: undefined | ReturnType<typeof prismaClientSingleton>
-}
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
-const prisma = globalThis.prisma ?? prismaClientSingleton()
+const createPrismaClient = () => {
+  const connectionString = process.env.DATABASE_URL || process.env.NEXT_PUBLIC_DATABASE_URL;
+  if (!connectionString) {
+    throw new Error("\n\n❌ PRISMA INITIALIZATION ERROR: DATABASE_URL is missing! ❌\n\n");
+  }
+  const adapter = new PrismaNeonHttp(connectionString, {} as any);
+  return new PrismaClient({ adapter }) as any;
+};
 
-export default prisma
+export const prisma = globalForPrisma.prisma || createPrismaClient();
 
-if (process.env.NODE_ENV !== 'production') globalThis.prisma = prisma
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
