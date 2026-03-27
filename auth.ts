@@ -17,14 +17,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       // Fetch the username from the database if needed, 
       // or rely on token if it's already there.
       if (token.username && session.user) {
-        (session.user as any).username = token.username;
+        (session.user as unknown as Record<string, unknown>).username = token.username;
       }
       
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
-        (token as any).username = (user as any).username;
+        (token as Record<string, unknown>).username = (user as unknown as Record<string, unknown>).username;
       }
       return token;
     },

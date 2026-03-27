@@ -20,7 +20,7 @@ export const authConfig = {
     signIn: "/",
   },
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
+    authorized({ auth, request: { nextUrl } }: { auth: import("next-auth").Session | null; request: import("next/server").NextRequest }) {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
       if (isOnDashboard) {
