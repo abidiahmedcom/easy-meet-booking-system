@@ -1,36 +1,33 @@
 import NextAuth from "next-auth";
-import Google from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "./lib/prisma";
+import { authConfig } from "./auth.config";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
-  providers: [
-    Google({
-      clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET,
-      authorization: {
-        params: {
-          scope: "openid email profile https://mail.google.com/",
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code",
-        },
-      },
-    }),
-  ],
-  debug: true,
+  session: { strategy: "jwt" }, // Strategy must be JWT for Edge compatibility with middleware
+  ...authConfig,
   callbacks: {
-    async session({ session, user }) {
-      if (session.user && user) {
-        session.user.id = user.id;
-        // @ts-expect-error - username is a custom field on User but not in default Session User type
-        session.user.username = (user as { username?: string }).username;
+    ...authConfig.callbacks,
+    async session({ session, token }) {
+      if (token.sub && session.user) {
+        session.user.id = token.sub;
       }
+      
+      // Fetch the username from the database if needed, 
+      // or rely on token if it's already there.
+      if (token.username && session.user) {
+        (session.user as any).username = token.username;
+      }
+      
       return session;
     },
+    async jwt({ token, user }) {
+      if (user) {
+        (token as any).username = (user as any).username;
+      }
+      return token;
+    },
   },
-  pages: {
-    signIn: "/",
-  },
+  debug: true,
 });
