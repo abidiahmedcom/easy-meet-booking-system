@@ -10,7 +10,8 @@ export async function GET() {
       success: true, 
       message: `Successfully unlinked ${deleted.count} Google accounts. You must log in again to get the fresh permissions!`,
     });
-  } catch (err: any) {
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+  } catch (err) {
+    const error = err instanceof Error ? err.message : "Unknown error";
+    return NextResponse.json({ success: false, error }, { status: 500 });
   }
 }

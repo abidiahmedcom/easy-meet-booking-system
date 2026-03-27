@@ -24,8 +24,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async session({ session, user }) {
       if (session.user && user) {
         session.user.id = user.id;
-        // @ts-ignore
-        session.user.username = (user as any).username;
+        // @ts-expect-error - username is a custom field on User but not in default Session User type
+        session.user.username = (user as { username?: string }).username;
       }
       return session;
     },

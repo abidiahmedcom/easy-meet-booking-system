@@ -2,13 +2,15 @@
 
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import Image from "next/image";
+import { User } from "../../lib/types";
 
 export default function Navbar({ 
   user, 
   activeTab, 
   onTabChange 
 }: { 
-  user: any, 
+  user: User | null, 
   activeTab?: string, 
   onTabChange?: (tab: string) => void 
 }) {
@@ -86,14 +88,14 @@ export default function Navbar({
                 title="View public booking page"
               >
                 {user?.image ? (
-                  <img 
-                    src={user.image} 
-                    alt={user.name || "User"} 
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).parentElement!.innerHTML = `<div class="w-full h-full flex items-center justify-center font-bold">${initials}</div>`;
-                    }}
-                  />
+                  <div className="relative w-full h-full">
+                    <Image 
+                      src={user.image} 
+                      alt={user.name || "User"} 
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
                 ) : (
                   initials
                 )}

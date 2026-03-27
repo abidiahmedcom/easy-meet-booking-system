@@ -17,12 +17,13 @@ import {
   isSameDay
 } from "date-fns";
 import Navbar from "../components/Navbar";
+import { User, Booking } from "../../lib/types";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState<"overview" | "availability" | "settings" | "bookings">("overview");
-  const [bookings, setBookings] = useState<any[]>([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [bookingsLoading, setBookingsLoading] = useState(false);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
@@ -61,18 +62,19 @@ export default function DashboardPage() {
         if (!curr) {
           router.push("/");
         } else {
-          const userAny = curr as any;
-          setUser(userAny);
-          if (userAny.availableStart) setStart(userAny.availableStart);
-          if (userAny.availableEnd) setEnd(userAny.availableEnd);
-          if (userAny.availableDays) setAvailableDays(userAny.availableDays.split(","));
-          if (userAny.duration) setDuration(userAny.duration);
-          if (userAny.location) setLocation(userAny.location);
-          if (userAny.allowOtherLocation !== undefined) setAllowOtherLocation(userAny.allowOtherLocation);
-          if (userAny.monthsUpfront !== undefined) setMonthsUpfront(userAny.monthsUpfront);
-          if (userAny.emailConfirmationMsg) setEmailConfirmationMsg(userAny.emailConfirmationMsg);
-          if (userAny.emailCancellationMsg) setEmailCancellationMsg(userAny.emailCancellationMsg);
-          if (userAny.dateOverrides) setDateOverrides(userAny.dateOverrides);
+          const userTyped = curr as User;
+          setUser(userTyped);
+          if (userTyped.availableStart) setStart(userTyped.availableStart);
+          if (userTyped.availableEnd) setEnd(userTyped.availableEnd);
+          if (userTyped.availableDays) setAvailableDays(userTyped.availableDays.split(","));
+          if (userTyped.duration) setDuration(userTyped.duration);
+          if (userTyped.location) setLocation(userTyped.location);
+          if (userTyped.allowOtherLocation !== undefined) setAllowOtherLocation(userTyped.allowOtherLocation);
+          if (userTyped.monthsUpfront !== undefined) setMonthsUpfront(userTyped.monthsUpfront);
+          if (userTyped.emailConfirmationMsg) setEmailConfirmationMsg(userTyped.emailConfirmationMsg);
+          if (userTyped.emailCancellationMsg) setEmailCancellationMsg(userTyped.emailCancellationMsg);
+          // @ts-expect-error - Prisma Json type mismatch
+          if (userTyped.dateOverrides) setDateOverrides(userTyped.dateOverrides);
           fetchBookings();
         }
       });
@@ -126,8 +128,10 @@ export default function DashboardPage() {
     if (!newUsername) return;
     
     const actions = await import("../actions");
-    const updated = await actions.updateUsername(user.id, newUsername);
-    setUser(updated);
+    if (user?.id) {
+      const updated = await actions.updateUsername(user.id, newUsername);
+      setUser(updated);
+    }
   };
 
   if (!user) {
@@ -179,7 +183,7 @@ export default function DashboardPage() {
   }
 
   const handleSave = async () => {
-    if (!user) return;
+    if (!user || !user.username) return;
     const updated = await updateUserAvailability(
       user.username, 
       start, 
@@ -282,7 +286,6 @@ export default function DashboardPage() {
 
   // Logic to generate the calendar days for the current month
   const today = startOfDay(new Date());
-  const currentMonthIdx = viewDate.getMonth();
   const currentYear = viewDate.getFullYear();
   
   const daysInMonth = eachDayOfInterval({
@@ -302,7 +305,7 @@ export default function DashboardPage() {
 
   return (
     <div className="h-screen bg-[#F4F4F0] text-black font-sans overflow-hidden flex flex-col">
-      <Navbar user={user} activeTab={activeTab} onTabChange={(tab: any) => setActiveTab(tab)} />
+      <Navbar user={user} activeTab={activeTab} onTabChange={(tab) => setActiveTab(tab as typeof activeTab)} />
       
       <div className="max-w-4xl w-full mx-auto flex flex-col min-h-0 px-4 pb-4 md:px-8 md:pb-8 pt-0 h-full">
 
@@ -519,7 +522,7 @@ export default function DashboardPage() {
                       {Array.from({ length: firstDayOfMonth }).map((_, i) => (
                         <div key={`empty-${i}`} className="bg-white/30 h-12 md:h-16"></div>
                       ))}
-                      {daysInMonth.map((dateObj, i) => {
+                      {daysInMonth.map((dateObj) => {
                         const dateNum = dateObj.getDate();
                         const dayOfWeek = dateObj.getDay().toString();
                         const dateStr = format(dateObj, 'yyyy-MM-dd');

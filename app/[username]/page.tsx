@@ -20,10 +20,10 @@ import {
   isAfter
 } from "date-fns";
 import Navbar from "../components/Navbar";
+import { User } from "../../lib/types";
 
-export default function BookingPage({ params }: { params: any }) {
-  const [username, setUsername] = useState<string | null>(null);
-  const [user, setUser] = useState<any>(null);
+export default function BookingPage({ params }: { params: Promise<{ username: string }> }) {
+  const [user, setUser] = useState<User & { isOwner: boolean } | null>(null);
   const [currentMonth, setCurrentMonth] = useState<Date>(startOfMonth(new Date())); // Use current date
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -33,13 +33,11 @@ export default function BookingPage({ params }: { params: any }) {
   const [meetingLocation, setMeetingLocation] = useState("Google Meet");
   const [otherDetails, setOtherDetails] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [currentUser, setCurrentUser] = useState<any>(null);
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [bookedSlots, setBookedSlots] = useState<string[]>([]);
 
   useEffect(() => {
-    params.then((p: any) => {
-        setUsername(p.username);
+    params.then((p) => {
         const actionsPromise = import("../actions");
         
         Promise.all([
@@ -47,11 +45,8 @@ export default function BookingPage({ params }: { params: any }) {
            actionsPromise.then(a => a.getCurrentUser())
          ]).then(([profile, current]) => {
            if (profile) {
-               const isOwner = current && current.id === profile.id;
+               const isOwner = !!(current && current.id === profile.id);
                setUser({ ...profile, isOwner });
-           }
-           if (current) {
-               setCurrentUser(current);
            }
            setLoading(false);
          });
@@ -71,12 +66,12 @@ export default function BookingPage({ params }: { params: any }) {
 
   const u = user;
   const availableDaysArray = u.availableDays ? u.availableDays.split(",").map(Number) : [1,2,3,4,5];
-  const getSafeOverrides = (overrides: any) => {
+  const getSafeOverrides = (overrides: unknown) => {
     if (!overrides) return {};
     if (typeof overrides === 'string') {
         try { return JSON.parse(overrides); } catch { return {}; }
     }
-    return overrides;
+    return overrides as Record<string, import("../../lib/types").DateOverride>;
   };
   const dateOverrides = getSafeOverrides(u.dateOverrides);
   const monthsUpfront = u.monthsUpfront ?? 3;
@@ -106,13 +101,13 @@ export default function BookingPage({ params }: { params: any }) {
 
   const firstDayOfMonth = getDay(startOfMonth(currentMonth));
   
-  const days = [
-    ...Array.from({ length: firstDayOfMonth }, () => ({ type: 'empty' })),
+  const days: ({ type: 'empty' } | { type: 'day', date: Date, available: boolean })[] = [
+    ...Array.from({ length: firstDayOfMonth }, () => ({ type: 'empty' as const })),
     ...daysInMonth.map(date => {
       const { isAvailable } = getDayDetails(date);
       const isPast = isBefore(date, today);
       return {
-        type: 'day',
+        type: 'day' as const,
         date: date,
         available: isAvailable && !isPast,
       };
@@ -256,27 +251,27 @@ export default function BookingPage({ params }: { params: any }) {
                 </div>
                 
                 <div className="flex-1 grid grid-cols-7 grid-rows-5 h-full bg-[#f4f4f0]">
-                  {days.map((d, i) => {
-                    const day = d as any;
+                  {days.map((day, i) => {
                     const isRightEdge = (i + 1) % 7 === 0;
                     const isBottomRow = i >= days.length - 7;
-                    const isActive = isSameDay(selectedDate, day.date);
+                    const isActive = day.type === 'day' && isSameDay(selectedDate, day.date);
+                    const isAvailable = day.type === 'day' && day.available;
                     
                     return (
                       <button 
                         key={i} 
-                        onClick={() => day.available && setSelectedDate(day.date)}
+                        onClick={() => isAvailable && setSelectedDate(day.date)}
                         className={`flex flex-col items-center justify-center p-[6px] relative transition-all active:scale-95
                           ${!isRightEdge ? 'border-r-[3px] md:border-r-[4px] border-black' : ''}
                           ${!isBottomRow ? 'border-b-[3px] md:border-b-[4px] border-black' : ''}
                           ${isActive ? 'bg-[#0A5CFF]' : 'bg-transparent hover:bg-gray-100'}
-                          ${!day.available ? 'opacity-20 cursor-not-allowed' : 'cursor-pointer'}
+                          ${!isAvailable ? 'opacity-20 cursor-not-allowed' : 'cursor-pointer'}
                         `}
                       >
-                        {day.type === 'day' && (
+                        {day.type === 'day' && day.date && (
                           <div className={`w-full h-full flex items-center justify-center text-2xl md:text-[32px] font-black tracking-tight
                             ${isActive ? 'text-white' : 'text-black'}
-                            ${day.available && !isActive ? 'border-[3px] border-[#0A5CFF]' : ''}
+                            ${isAvailable && !isActive ? 'border-[3px] border-[#0A5CFF]' : ''}
                           `}>
                             {format(day.date, 'd')}
                           </div>

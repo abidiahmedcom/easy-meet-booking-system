@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { format } from "date-fns";
+import { DateOverrides } from "../lib/types";
 
 export async function getCurrentUser() {
   const session = await auth();
@@ -32,7 +33,7 @@ export async function updateUserAvailability(
   duration: number,
   location: string,
   allowOtherLocation: boolean,
-  dateOverrides: any,
+  dateOverrides: DateOverrides | null,
   monthsUpfront: number,
   emailConfirmationMsg?: string,
   emailCancellationMsg?: string
@@ -45,8 +46,8 @@ export async function updateUserAvailability(
       availableDays,
       duration,
       location,
-      allowOtherLocation,
-      dateOverrides,
+      // @ts-expect-error - Prisma Json type mismatch with our interface
+      dateOverrides: dateOverrides,
       monthsUpfront,
       emailConfirmationMsg,
       emailCancellationMsg
@@ -54,7 +55,7 @@ export async function updateUserAvailability(
   });
   revalidatePath(`/${username}`);
   revalidatePath("/dashboard");
-  return user as any;
+  return user;
 }
 
 export async function getUserProfile(username: string) {

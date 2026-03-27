@@ -12,8 +12,8 @@ const createPrismaClient = () => {
   if (!connectionString) {
     throw new Error("\n\n❌ PRISMA INITIALIZATION ERROR: DATABASE_URL is missing! ❌\n\n");
   }
-  const adapter = new PrismaNeonHttp(connectionString, {} as any);
-  return new PrismaClient({ adapter }) as any;
+  const adapter = new PrismaNeonHttp(connectionString, {});
+  return new PrismaClient({ adapter });
 };
 
 export const prisma = globalForPrisma.prisma || createPrismaClient();
