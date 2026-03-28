@@ -10,9 +10,11 @@ export default async function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#F4F4F0] text-black font-sans p-4 relative">
+    <div 
+      className="min-h-screen w-full flex flex-col items-center justify-center text-black font-sans p-4 relative bg-cover bg-center bg-no-repeat bg-[url('/bg-image-mobile.png')] md:bg-[url('/bg-image.png')]"
+    >
       <div className="w-full max-w-md bg-white border-[4px] border-black p-8 shadow-[8px_8px_0_0_#000]">
-        <h1 className="text-4xl font-black uppercase mb-6 tracking-tighter text-center">MEETFLOW</h1>
+        <h1 className="text-4xl font-black uppercase mb-6 tracking-tighter text-center">EASYMEET</h1>
         <p className="text-xl font-bold mb-8 text-center text-gray-700">Schedule meetings effortlessly.</p>
         
         <form
@@ -24,7 +26,7 @@ export default async function LandingPage() {
         >
           <button 
             type="submit" 
-            className="w-full bg-white text-[#3c4043] font-medium text-lg py-3 px-4 border border-[#dadce0] rounded hover:bg-gray-50 hover:shadow-sm transition-all flex items-center justify-center gap-3 shadow-sm"
+            className="w-full bg-white text-[#3c4043] font-medium text-lg py-3 px-4 border border-[#dadce0] rounded hover:bg-gray-50 hover:shadow-sm transition-all flex items-center justify-center gap-3 shadow-sm cursor-pointer"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px">
               <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
@@ -38,9 +40,9 @@ export default async function LandingPage() {
         </form>
       </div>
       
-      <footer className="absolute bottom-6 flex justify-center gap-8 w-full text-sm font-bold text-gray-500">
-        <Link href="/privacy" className="hover:text-black hover:underline transition-colors">Privacy Policy</Link>
-        <Link href="/terms" className="hover:text-black hover:underline transition-colors">Terms of Service</Link>
+      <footer className="absolute bottom-6 flex justify-center gap-4 w-full">
+        <Link href="/privacy" className="bg-white text-black text-xs md:text-sm font-bold uppercase px-4 py-2 border-2 border-black shadow-[4px_4px_0_0_#000] hover:translate-x-[2px] hover:translate-y-[2px] transition-all">Privacy Policy</Link>
+        <Link href="/terms" className="bg-white text-black text-xs md:text-sm font-bold uppercase px-4 py-2 border-2 border-black shadow-[4px_4px_0_0_#000] hover:translate-x-[2px] hover:translate-y-[2px] transition-all">Terms of Service</Link>
       </footer>
     </div>
   );

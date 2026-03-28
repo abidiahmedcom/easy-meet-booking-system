@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EasyMeet: Open-Source Calendly Alternative built with Next.js
 
-## Getting Started
+EasyMeet is a modern, high-performance scheduling and booking system designed to simplify appointment management. Built with the latest Next.js 15 features, it offers a seamless experience for both hosts and visitors, with a focus on speed, responsiveness, and a unique neobrutalist aesthetic.
 
-First, run the development server:
+---
 
+## 📸 Screenshots
+
+<div align="center">
+  <h3>Desktop View</h3>
+  <img src="./github/screenshots/desktop-login-scree.png" alt="EasyMeet Desktop Login" width="800">
+  <br><br>
+  <h3>Admin Dashboard</h3>
+  <img src="./github/screenshots/admin-view.png" alt="EasyMeet Admin Dashboard" width="800">
+  <br><br>
+  <h3>Public Booking Page</h3>
+  <img src="./github/screenshots/booking-consultation.png" alt="EasyMeet Booking Page" width="800">
+</div>
+
+---
+
+## 🚀 Key Features
+
+-   **⚡ High Performance**: Optimized with Next.js App Router for lightning-fast page transitions.
+-   **🔐 Secure Authentication**: Integrated with Google Auth via Next-Auth for a smooth user experience.
+-   **📅 Smart Scheduling**: Intuitive calendar interface to manage availability and handle time-zone-aware bookings.
+-   **🎨 Unique UI/UX**: Bold neobrutalist design that stands out from typical SaaS interfaces.
+-   **📱 Fully Responsive**: Seamless experience across mobile, tablet, and desktop devices.
+-   **🛠️ Admin Dashboard**: Centralized management of availability, duration, and upcoming bookings.
+-   **✉️ Email Notifications**: Automated confirmations and notifications to keep everyone in the loop.
+
+---
+
+## 🛠️ Tech Stack
+
+-   **Framework**: [Next.js](https://nextjs.org/) (App Router & Server Actions)
+-   **Database**: [PostgreSQL (Neon)](https://neon.tech/) with [Prisma ORM](https://www.prisma.io/)
+-   **Authentication**: [NextAuth.js](https://next-auth.js.org/)
+-   **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+-   **Deployment**: [Vercel](https://vercel.com/)
+-   **Icons/Images**: Custom SVG icons and Next.js Image optimization
+
+---
+
+## 🏁 Getting Started
+
+### 1. Clone & Install
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/your-repo/easy-meet-booking-system.git
+cd easy-meet-booking-system
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Configure Environment
+Create a `.env` file from the example:
+```bash
+cp .env.example .env
+```
+*(Fill in your database URL, authentication secrets, and key environment variables)*
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Database Setup
+```bash
+npx prisma generate
+npx prisma db push
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Run Development Server
+```bash
+pnpm dev
+```
+Visit [http://localhost:3000](http://localhost:3000) to see your app in action!
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📄 License
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License.

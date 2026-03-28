@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import { prisma } from "./prisma";
 
-const FROM = process.env.EMAIL_FROM || "MeetFlow <noreply@meetflow.com>";
+const FROM = process.env.EMAIL_FROM || "EasyMeet <noreply@calendly-style-booking-system.vercel.app>";
 
 export async function getTransporter(ownerId?: string) {
   if (ownerId) {
@@ -84,7 +84,7 @@ export async function sendBookingConfirmation(data: BookingEmailData, ownerId?: 
           <tr><td style="padding: 8px 0; font-weight: 700; opacity: 0.6;">Location</td><td style="padding: 8px 0; font-weight: 900;">${locationText}</td></tr>
         </table>
         <hr style="border: 2px solid #000; margin: 24px 0;" />
-        <p style="font-size: 12px; opacity: 0.4;">Sent via MeetFlow</p>
+        <p style="font-size: 12px; opacity: 0.4;">Sent via EasyMeet</p>
       </div>
     `,
   });
@@ -105,7 +105,7 @@ export async function sendBookingConfirmation(data: BookingEmailData, ownerId?: 
         </table>
         <p>You can manage this booking from your <strong>Dashboard → Bookings</strong> tab.</p>
         <hr style="border: 2px solid #000; margin: 24px 0;" />
-        <p style="font-size: 12px; opacity: 0.4;">Sent via MeetFlow</p>
+        <p style="font-size: 12px; opacity: 0.4;">Sent via EasyMeet</p>
       </div>
     `,
   });
@@ -141,7 +141,7 @@ export async function sendCancellationNotice(data: {
         ${customMessage}
         <p>Please reach out if you'd like to reschedule.</p>
         <hr style="border: 2px solid #000; margin: 24px 0;" />
-        <p style="font-size: 12px; opacity: 0.4;">Sent via MeetFlow</p>
+        <p style="font-size: 12px; opacity: 0.4;">Sent via EasyMeet</p>
       </div>
     `,
   });

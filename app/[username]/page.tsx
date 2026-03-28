@@ -191,20 +191,20 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
 
 
   return (
-    <div className="h-screen w-full flex flex-col overflow-hidden items-center bg-[#F4F4F0] text-black font-sans relative">
+    <div className="min-h-screen lg:h-screen w-full flex flex-col items-center bg-[#F4F4F0] text-black font-sans relative lg:overflow-hidden">
       <Navbar user={u} />
 
-      <div className="w-full flex-1 max-w-[1400px] flex flex-col min-h-0 relative z-10 px-4 pb-4 md:px-6 md:pb-6 lg:px-8 lg:pb-8 pt-0">
+      <div className="w-full flex-1 max-w-[1400px] flex flex-col lg:min-h-0 relative z-10 px-4 pb-4 md:px-6 md:pb-6 lg:px-8 lg:pb-8 pt-0">
         
         {/* Main Card */}
-        <main className="w-full flex-1 flex flex-col min-h-0 border-x-[3px] border-b-[3px] md:border-x-[4px] md:border-b-[4px] border-black bg-[#f4f4f0] shadow-none overflow-hidden relative z-10">
+        <main className="w-full flex-1 flex flex-col lg:min-h-0 border-x-[3px] border-b-[3px] md:border-x-[4px] md:border-b-[4px] border-black bg-[#f4f4f0] shadow-none lg:overflow-hidden relative z-10">
           <div className="shrink-0 p-4 md:p-6 lg:px-10 lg:py-6 border-b-[3px] md:border-b-[4px] border-black bg-white">
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight leading-none text-black">
               Book an Introductory Consultation
             </h1>
           </div>
 
-          <div className="flex flex-col lg:flex-row flex-1 min-h-0">
+          <div className="flex flex-col lg:flex-row flex-1 lg:min-h-0">
             {/* Left Column */}
             <div className="w-full shrink-0 lg:shrink lg:w-[32%] p-6 md:p-8 lg:p-10 border-b-[3px] md:border-b-[4px] lg:border-b-0 lg:border-r-[4px] border-black flex flex-col bg-white">
               <h2 className="text-3xl md:text-[42px] font-black leading-[1.1] mb-4 md:mb-6 tracking-tight">
@@ -220,7 +220,7 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
             </div>
 
             {/* Middle Column */}
-            <div className="w-full lg:w-[42%] flex flex-col min-h-0 border-b-[3px] md:border-b-[4px] lg:border-b-0 lg:border-r-[4px] border-black bg-[#f4f4f0]">
+            <div className="w-full lg:w-[42%] flex flex-col lg:min-h-0 border-b-[3px] md:border-b-[4px] lg:border-b-0 lg:border-r-[4px] border-black bg-[#f4f4f0]">
               <div className="flex shrink-0 justify-between items-center px-6 py-4 md:px-6 md:py-5 border-b-[3px] md:border-b-[4px] border-black bg-[#f4f4f0]">
                 <h3 className="text-2xl md:text-[36px] font-black tracking-tight">{format(currentMonth, 'MMMM yyyy')}</h3>
                 <div className="flex items-center gap-4 text-xl md:text-[26px] font-bold">
@@ -241,7 +241,7 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
                 </div>
               </div>
 
-              <div className="flex-1 flex flex-col bg-white min-h-0">
+              <div className="flex-1 flex flex-col bg-white lg:min-h-0">
                 <div className="shrink-0 grid grid-cols-7 border-b-[3px] md:border-b-[4px] border-black text-center bg-white">
                   {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d, i) => (
                     <div key={d} className={`py-2 md:py-3 text-center font-extrabold text-lg md:text-[20px] tracking-tight ${i !== 6 ? 'border-r-[3px] md:border-r-[4px] border-black' : ''}`}>
@@ -250,7 +250,7 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
                   ))}
                 </div>
                 
-                <div className="flex-1 grid grid-cols-7 grid-rows-5 h-full bg-[#f4f4f0]">
+                <div className="lg:flex-1 grid grid-cols-7 grid-rows-5 lg:h-full bg-[#f4f4f0]">
                   {days.map((day, i) => {
                     const isRightEdge = (i + 1) % 7 === 0;
                     const isBottomRow = i >= days.length - 7;
@@ -269,7 +269,7 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
                         `}
                       >
                         {day.type === 'day' && day.date && (
-                          <div className={`w-full h-full flex items-center justify-center text-2xl md:text-[32px] font-black tracking-tight
+                          <div className={`w-full h-full flex items-center justify-center text-xl md:text-[32px] font-black tracking-tight
                             ${isActive ? 'text-white' : 'text-black'}
                             ${isAvailable && !isActive ? 'border-[3px] border-[#0A5CFF]' : ''}
                           `}>
@@ -284,7 +284,7 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
             </div>
 
             {/* Right Column: Time Slots */}
-             <div className="w-full lg:w-[26%] flex flex-col bg-[#f4f4f0] min-h-0 overflow-hidden text-black p-4 md:p-6 lg:p-8">
+             <div className="w-full lg:w-[26%] flex flex-col bg-[#f4f4f0] lg:min-h-0 lg:overflow-hidden text-black p-4 md:p-6 lg:p-8">
               {bookingSuccess ? (
                 <div className="flex-1 flex flex-col items-center justify-center gap-6 animate-in fade-in duration-300 text-center p-4">
                   <div className="w-16 h-16 bg-green-500 text-white flex items-center justify-center text-3xl font-black border-[3px] border-black">
@@ -313,7 +313,7 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
                 </div>
               ) : !selectedTime ? (
                 <>
-                  <div className="flex-1 flex flex-col min-h-0 pb-6 gap-3 overflow-y-auto pr-2 custom-scrollbar">
+                  <div className="flex-1 flex flex-col pb-6 gap-3 pr-2 custom-scrollbar lg:overflow-y-auto lg:min-h-0">
                     {times.length > 0 ? times.map((time, index) => {
                       return (
                         <button
@@ -339,7 +339,7 @@ export default function BookingPage({ params }: { params: Promise<{ username: st
                   )}
                 </>
               ) : (
-                <div className="flex-1 flex flex-col min-h-0 gap-6 animate-in slide-in-from-right-4 duration-300 overflow-y-auto pr-2 custom-scrollbar">
+                <div className="flex-1 flex flex-col gap-6 animate-in slide-in-from-right-4 duration-300 pr-2 custom-scrollbar lg:overflow-y-auto lg:min-h-0">
                   <div className="flex justify-between items-center mb-2">
                     <h3 className="text-2xl font-black uppercase tracking-tighter">Your Details</h3>
                     <button onClick={() => setSelectedTime(null)} className="text-sm font-bold uppercase underline hover:opacity-70 active:scale-95 transition-all cursor-pointer">Change Time</button>

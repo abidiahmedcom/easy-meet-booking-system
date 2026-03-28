@@ -151,7 +151,7 @@ export default function DashboardPage() {
           <div className="mb-10 p-6 bg-[#0A5CFF]/5 border-l-[6px] border-[#0A5CFF]">
             <p className="text-xl font-bold text-[#0A5CFF] mb-2 uppercase tracking-wide text-sm opacity-80">Personal Booking Link</p>
             <p className="text-2xl font-black break-all">
-                {typeof window !== "undefined" ? window.location.host : "meetflow.com"}/<span className="text-[#0A5CFF] underline decoration-4 underline-offset-4">{setupUsername || "username"}</span>
+                {typeof window !== "undefined" ? window.location.host : "calendly-style-booking-system.vercel.app"}/<span className="text-[#0A5CFF] underline decoration-4 underline-offset-4">{setupUsername || "username"}</span>
             </p>
           </div>
 
@@ -304,13 +304,13 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="h-screen bg-[#F4F4F0] text-black font-sans overflow-hidden flex flex-col">
+    <div className="min-h-screen lg:h-screen bg-[#F4F4F0] text-black font-sans lg:overflow-hidden flex flex-col">
       <Navbar user={user} activeTab={activeTab} onTabChange={(tab) => setActiveTab(tab as typeof activeTab)} />
       
-      <div className="max-w-4xl w-full mx-auto flex flex-col min-h-0 px-4 pb-4 md:px-8 md:pb-8 pt-0 h-full">
+      <div className="max-w-4xl w-full mx-auto flex flex-col lg:min-h-0 px-4 pb-4 md:px-8 md:pb-8 pt-0 h-auto lg:h-full">
 
-        <div className="flex-1 min-h-0 bg-white border-x-[4px] border-b-[4px] border-black shadow-[8px_8px_0_0_#000] overflow-hidden flex flex-col">
-          <div className="flex-1 overflow-y-auto p-8">
+        <div className="flex-1 lg:min-h-0 bg-white border-x-[4px] border-b-[4px] border-black shadow-[8px_8px_0_0_#000] lg:overflow-hidden flex flex-col">
+          <div className="flex-1 lg:overflow-y-auto p-4 md:p-8">
             
             {activeTab === "overview" && (
               <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
@@ -331,7 +331,7 @@ export default function DashboardPage() {
                     </button>
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                    <div className="p-6 border-[3px] border-black bg-white">
                       <p className="text-sm uppercase font-black opacity-50">Duration</p>
                       <p className="text-3xl font-black">{duration} MIN</p>
@@ -540,7 +540,7 @@ export default function DashboardPage() {
                             key={dateNum}
                             onClick={() => !isPast && setSelectedDate(dateStr)}
                             disabled={isPast}
-                            className={`h-12 md:h-16 flex flex-col items-center justify-center relative transition-all border border-gray-100
+                            className={`h-14 md:h-16 flex flex-col items-center justify-center relative transition-all border border-gray-100
                               ${isPast ? 'bg-[#F4F4F0] text-[#D1D1D1] cursor-not-allowed' : 
                                 (isAvailable ? 'bg-[#0A5CFF] text-white cursor-pointer hover:bg-[#0047D1]' : 'bg-white text-black cursor-pointer hover:bg-gray-50')}
                               ${selectedDate === dateStr ? 'ring-[4px] ring-black z-20' : ''}

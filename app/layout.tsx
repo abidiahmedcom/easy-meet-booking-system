@@ -14,8 +14,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Calendly Admin",
-  description: "A professional scheduling system",
+  metadataBase: new URL("https://calendly-style-booking-system.vercel.app"),
+  title: {
+    template: "%s | EasyMeet",
+    default: "EasyMeet",
+  },
+  description: "Schedule meetings effortlessly.",
+  alternates: {
+    canonical: "/",
+  },
 };
 
 export default function RootLayout({
