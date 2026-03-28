@@ -1,11 +1,19 @@
-# EasyMeet: Open-Source Calendly Alternative built with Next.js
+# EasyMeet: The Bold Way to Schedule.
+
+<div align="center">
+  <a href="https://calendly-style-booking-system.vercel.app/me">
+    <img src="https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=vercel" alt="Live Demo">
+  </a>
+</div>
+
+Tired of generic booking tools? **EasyMeet** is a modern, open-source scheduling engine designed for speed and style. Built on the cutting-edge **Next.js 15** stack, it combines the power of **Prisma** and **PostgreSQL** with a striking **neobrutalist aesthetic** that actually stands out.
+
+Whether you're a freelancer, a consultant, or a small team, EasyMeet gives you full control over your calendar without the monthly subscription. Secure, responsive, and developer-friendly.
 
 > [!WARNING]
 > **Google Cloud Testing Mode Disclaimer**: This project is currently configured in "Testing" mode in the Google Cloud Console. 
 > - Users will see a **"Google hasn't verified this app"** warning during sign-in. You can safely bypass this by clicking "Advanced" and "Go to [app name] (unsafe)".
 > - Only **authorized test users** added in the Google Cloud Console can sign in. Ensure your email is added to the "Test users" list in your OAuth consent screen settings.
-
-EasyMeet is a modern, high-performance scheduling and booking system designed to simplify appointment management. Built with the latest Next.js 15 features, it offers a seamless experience for both hosts and visitors, with a focus on speed, responsiveness, and a unique neobrutalist aesthetic.
 
 ---
 
@@ -80,3 +88,11 @@ Visit [http://localhost:3000](http://localhost:3000) to see your app in action!
 ## 📄 License
 
 This project is licensed under the MIT License.
+
+---
+
+## 🔗 Connect with me
+
+-   **Portfolio**: [abidiahmed.com](https://abidiahmed.com)
+-   **Email**: [contact@abidiahmed.com](mailto:contact@abidiahmed.com)
+-   **Live Demo**: [EasyMeet Demo](https://calendly-style-booking-system.vercel.app/me)
