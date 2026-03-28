@@ -1,5 +1,6 @@
 import { auth, signIn } from "@/auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export default async function LandingPage() {
   const session = await auth();
@@ -9,7 +10,7 @@ export default async function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[#F4F4F0] text-black font-sans p-4">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#F4F4F0] text-black font-sans p-4 relative">
       <div className="w-full max-w-md bg-white border-[4px] border-black p-8 shadow-[8px_8px_0_0_#000]">
         <h1 className="text-4xl font-black uppercase mb-6 tracking-tighter text-center">MEETFLOW</h1>
         <p className="text-xl font-bold mb-8 text-center text-gray-700">Schedule meetings effortlessly.</p>
@@ -36,6 +37,11 @@ export default async function LandingPage() {
           </button>
         </form>
       </div>
+      
+      <footer className="absolute bottom-6 flex justify-center gap-8 w-full text-sm font-bold text-gray-500">
+        <Link href="/privacy" className="hover:text-black hover:underline transition-colors">Privacy Policy</Link>
+        <Link href="/terms" className="hover:text-black hover:underline transition-colors">Terms of Service</Link>
+      </footer>
     </div>
   );
 }

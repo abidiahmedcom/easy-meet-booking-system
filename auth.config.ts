@@ -19,15 +19,14 @@ export const authConfig = {
   pages: {
     signIn: "/",
   },
+  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
   callbacks: {
     authorized({ auth, request: { nextUrl } }: { auth: import("next-auth").Session | null; request: import("next/server").NextRequest }) {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
+      
       if (isOnDashboard) {
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn && nextUrl.pathname === "/") {
-        return Response.redirect(new URL("/dashboard", nextUrl));
+        return isLoggedIn; // NextAuth will automatically redirect to signIn page if false
       }
       return true;
     },
