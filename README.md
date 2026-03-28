@@ -1,5 +1,10 @@
 # EasyMeet: Open-Source Calendly Alternative built with Next.js
 
+> [!WARNING]
+> **Google Cloud Testing Mode Disclaimer**: This project is currently configured in "Testing" mode in the Google Cloud Console. 
+> - Users will see a **"Google hasn't verified this app"** warning during sign-in. You can safely bypass this by clicking "Advanced" and "Go to [app name] (unsafe)".
+> - Only **authorized test users** added in the Google Cloud Console can sign in. Ensure your email is added to the "Test users" list in your OAuth consent screen settings.
+
 EasyMeet is a modern, high-performance scheduling and booking system designed to simplify appointment management. Built with the latest Next.js 15 features, it offers a seamless experience for both hosts and visitors, with a focus on speed, responsiveness, and a unique neobrutalist aesthetic.
 
 ---

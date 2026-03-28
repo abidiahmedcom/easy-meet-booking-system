@@ -4,40 +4,44 @@ import { prisma } from "./prisma";
 const FROM = process.env.EMAIL_FROM || "EasyMeet <noreply@calendly-style-booking-system.vercel.app>";
 
 export async function getTransporter(ownerId?: string) {
-  if (ownerId) {
-    const account = await prisma.account.findFirst({
-      where: { userId: ownerId, provider: "google" },
-    });
-    
-    if (account?.refresh_token) {
-      const user = await prisma.user.findUnique({ where: { id: ownerId } });
-      if (user?.email) {
-        const mailer = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            type: "OAuth2",
-            user: user.email,
-            clientId: process.env.AUTH_GOOGLE_ID,
-            clientSecret: process.env.AUTH_GOOGLE_SECRET,
-            refreshToken: account.refresh_token,
-          },
-        });
-        return { mailer, fromEmail: user.email };
-      }
-    }
+  if (!ownerId) {
+    console.error("Email Error: No ownerId provided to getTransporter. Cannot send email without an OAuth2 account.");
+    return null;
   }
 
-  const mailer = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || "smtp.gmail.com",
-    port: parseInt(process.env.SMTP_PORT || "587"),
-    secure: process.env.SMTP_SECURE === "true",
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
+  const account = await prisma.account.findFirst({
+    where: { userId: ownerId, provider: "google" },
   });
   
-  return { mailer, fromEmail: FROM };
+  if (!account?.refresh_token) {
+    const user = await prisma.user.findUnique({ where: { id: ownerId } });
+    console.error(`Email Error: User ${user?.email || ownerId} has no Google refresh_token. They must re-login to grant "mail" permissions.`);
+    return null;
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: ownerId } });
+  if (!user?.email) {
+    console.error(`Email Error: User record for ${ownerId} not found or has no email address.`);
+    return null;
+  }
+
+  try {
+    const mailer = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        type: "OAuth2",
+        user: user.email,
+        clientId: process.env.AUTH_GOOGLE_ID,
+        clientSecret: process.env.AUTH_GOOGLE_SECRET,
+        refreshToken: account.refresh_token,
+      },
+    });
+    
+    return { mailer, fromEmail: user.email };
+  } catch (error) {
+    console.error("Email Error: Failed to initialize Nodemailer OAuth2 transporter:", error);
+    return null;
+  }
 }
 
 interface BookingEmailData {
@@ -59,7 +63,9 @@ export async function sendBookingConfirmation(data: BookingEmailData, ownerId?: 
     ? `Other: ${locationDetails}`
     : location;
 
-  const { mailer, fromEmail } = await getTransporter(ownerId);
+  const transporter = await getTransporter(ownerId);
+  if (!transporter) return;
+  const { mailer, fromEmail } = transporter;
   const userRecord = ownerId ? await prisma.user.findUnique({ where: { id: ownerId } }) : null;
   const customMessage = userRecord?.emailConfirmationMsg 
     ? `<div style="margin: 24px 0; padding: 16px; background-color: #f4f4f0; border-left: 4px solid #000;">
@@ -121,7 +127,9 @@ export async function sendCancellationNotice(data: {
 }, ownerId?: string) {
   const { guestName, guestEmail, ownerName, date, time } = data;
 
-  const { mailer, fromEmail } = await getTransporter(ownerId);
+  const transporter = await getTransporter(ownerId);
+  if (!transporter) return;
+  const { mailer, fromEmail } = transporter;
   const userRecord = ownerId ? await prisma.user.findUnique({ where: { id: ownerId } }) : null;
   const customMessage = userRecord?.emailCancellationMsg 
     ? `<div style="margin: 24px 0; padding: 16px; background-color: #f4f4f0; border-left: 4px solid #E53935;">
