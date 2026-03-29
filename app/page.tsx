@@ -1,6 +1,7 @@
 import { auth, signIn } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import PixelBackground from "@/app/components/PixelBackground";
 
 export default async function LandingPage() {
   const session = await auth();
@@ -10,9 +11,11 @@ export default async function LandingPage() {
   }
 
   return (
-    <div 
-      className="min-h-screen w-full flex flex-col items-center justify-center text-black font-sans p-4 relative bg-cover bg-center bg-no-repeat bg-[url('/bg-image-mobile.png')] md:bg-[url('/bg-image.png')]"
-    >
+    <div className="min-h-screen w-full flex flex-col items-center justify-center text-black font-sans p-4 relative">
+      <PixelBackground 
+        desktopSrc="/bg-image.png"
+        mobileSrc="/bg-image-mobile.png"
+      />
       <div className="w-full max-w-md bg-white border-[4px] border-black p-8 shadow-[8px_8px_0_0_#000]">
         <h1 className="text-4xl font-black uppercase mb-6 tracking-tighter text-center">EASYMEET</h1>
         <p className="text-xl font-bold mb-8 text-center text-gray-700">Schedule meetings effortlessly.</p>
